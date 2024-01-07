@@ -1,0 +1,16 @@
+@font-face {
+  font-family: dirooz;
+  src: url(./fonts/Dirooz-WOL.woff);
+}
+
+.my-font {
+  font-family: 'dirooz';
+}
+
+body {
+  font-family: 'dirooz', 'Roboto';
+}
+
+.rtl-direction{
+  direction: rtl;
+}
