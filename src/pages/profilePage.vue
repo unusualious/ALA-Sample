@@ -47,9 +47,9 @@
               lazy-rules
             />
           </div>
-          <div class="col-4 q-pa-lg">
-            <q-radio dense v-model="gender" val="مرد" label="مرد" />
-            <q-radio dense v-model="gender" val="زن" label="زن" />
+          <div class="col-4 q-pa-lg row justify-end">
+            <q-radio class="col" dense v-model="gender" val="مرد" label="مرد" />
+            <q-radio class="col" dense v-model="gender" val="زن" label="زن" />
           </div>
           <div class="col-4 q-pa-lg">
             <q-select
@@ -58,55 +58,61 @@
               label="انتخاب شهر"
             />
           </div>
+          <div class="col-4 q-pa-lg">
+            <q-select
+              v-model="province"
+              :options="provinceNameArray"
+              label="انتخاب استان"
+            />
+          </div>
           <div class="col-12">
             <q-btn label="ثبت اطلاعات کاربر" type="submit" color="purple" />
           </div>
         </q-form>
-
         <div v-else>
           <div class="q-pa-md row items-start q-gutter-md">
             <q-card class="my-card col-12" flat bordered>
-              <q-card-section horizontal>
-                <q-card-section class="q-pt-xs col-12">
-                  <div class="text-h5 q-mt-sm q-mb-xs q-mb-lg">
-                    اطلاعات کاربر
-                  </div>
-                  <div
-                    class="text-subtitle1 q-py-md"
-                    v-if="userInfo.first_name"
-                  >
-                    <span>
-                      {{ userInfo.first_name }}
-                    </span>
-                    : نام
-                  </div>
-                  <q-separator />
-                  <div class="text-subtitle1 q-py-md">
-                    <span>
-                      {{ userInfo.last_name }}
-                    </span>
-                    <span> : نام خانوادگی </span>
-                  </div>
-                  <q-separator />
-                  <div class="text-subtitle1 rtl-direction q-py-md">
-                    <span> جنسیت :</span>
-                    <span>
-                      {{ userInfo.gender }}
-                    </span>
-                  </div>
-                  <q-separator />
-                  <div class="text-subtitle1 rtl-direction q-py-md">
-                    <span> نام شهر : </span>
-                    <span>
-                      {{ userInfo.cities }}
-                    </span>
-                  </div>
-                </q-card-section>
+              <q-card-section class="q-pt-xs col-12">
+                <div class="text-h5 q-mt-sm q-mb-xs q-mb-lg">اطلاعات کاربر</div>
+                <div class="text-subtitle1 q-py-md">
+                  <span> : نام</span>
+                  <span>
+                    {{ userInfo.first_name }}
+                  </span>
+                </div>
+                <q-separator />
+                <div class="text-subtitle1 q-py-md">
+                  <span> : نام خانوادگی </span>
+                  <span>
+                    {{ userInfo.last_name }}
+                  </span>
+                </div>
+                <q-separator />
+                <div class="text-subtitle1 rtl-direction q-py-md">
+                  <span> : جنسیت </span>
+                  <span>
+                    {{ userInfo.gender }}
+                  </span>
+                </div>
+                <q-separator />
+                <div class="text-subtitle1 rtl-direction q-py-md">
+                  <span> : نام استان </span>
+                  <span>
+                    {{ userInfo.province }}
+                  </span>
+                </div>
+                <q-separator />
+                <div class="text-subtitle1 rtl-direction q-py-md">
+                  <span> : نام شهر </span>
+                  <span>
+                    {{ userInfo.cities }}
+                  </span>
+                </div>
               </q-card-section>
 
               <q-card-actions>
                 <q-btn
-                  label="تکمیل اطلاعات کاربر"
+                  label="ویرایش یا تکمیل اطلاعات "
                   color="primary"
                   @click="switchEditMode"
                 />
@@ -150,6 +156,7 @@ export default defineComponent({
     const email = ref('');
     const gender = ref('مرد');
     const city = ref('');
+    const province = ref(['']);
     const editMode = ref(false);
     const switchEditMode = () => {
       editMode.value = true;
@@ -160,17 +167,31 @@ export default defineComponent({
     );
     const cities = computed(() => formData.cities);
     const citiesNameArray = computed(() => {
+      debugger;
       var citiesArray = [];
       for (var i = 0; i < cities.value.length; i++) {
-        citiesArray.push(cities.value[i].title);
+        if (cities.value[i].province.title == province.value) {
+          citiesArray.push(cities.value[i].title);
+        }
       }
       return citiesArray;
     });
     console.log(cities);
+    const provinces = computed(() => formData.provinces);
+    const provinceNameArray = computed(() => {
+      var provincesArray = [];
+      for (var i = 0; i < provinces.value.length; i++) {
+        provincesArray.push(provinces.value[i].title);
+      }
+      return provincesArray;
+    });
     return {
       userInfo,
       cities,
       citiesNameArray,
+      provinceNameArray,
+      provinces,
+      province,
       editMode,
       switchEditMode,
       first_name,
@@ -185,6 +206,7 @@ export default defineComponent({
         userInfo.value.email = email.value;
         userInfo.value.gender = gender.value;
         userInfo.value.cities = city.value;
+        userInfo.value.province = province.value;
         localStorage.setItem('ProfileInfo', JSON.stringify(userInfo.value));
         editMode.value = false;
       },
@@ -193,6 +215,10 @@ export default defineComponent({
 });
 </script>
 <style lang="sass">
+.text-subtitle1
+      display: flex
+      flex-direction: row-reverse
+
 .example-row-column-width
   .row > div
     padding: 10px 15px

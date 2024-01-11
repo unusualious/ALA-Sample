@@ -15,6 +15,7 @@ export const useFormDataStore = defineStore('formData', () => {
           (res) => {
             debugger;
             cities.value = res.data.data.cities;
+            provinces.value = res.data.data.provinces;
             return res;
           },
           (error) => {
